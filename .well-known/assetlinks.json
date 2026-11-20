@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.alfred.app",
+      "sha256_cert_fingerprints": [
+        "DE:9A:AD:78:F5:EC:E0:65:F1:8F:A3:BA:AA:73:E1:77:18:E0:99:AA:7C:31:F2:CC:4A:04:5F:37:86:E0:93:94"
+      ]
+    }
+  }
+]

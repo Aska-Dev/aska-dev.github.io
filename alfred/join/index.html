@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alfred — Haushaltseinladung</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #f4f6f9; color: #1a1d24;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    background: #fff; border-radius: 24px; padding: 40px 32px;
+    max-width: 420px; width: 100%; text-align: center;
+    box-shadow: 0 8px 32px rgba(20, 30, 55, .08);
+  }
+  .mustache { width: 96px; height: auto; margin-bottom: 18px; }
+  h1 { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
+  .household { color: #3e6bc4; font-weight: 600; }
+  p.sub { color: #5a6270; font-size: 15px; line-height: 1.5; margin-bottom: 26px; }
+  .btn {
+    display: inline-block; background: #3e6bc4; color: #fff;
+    padding: 14px 32px; border-radius: 999px; font-size: 16px; font-weight: 600;
+    text-decoration: none;
+  }
+  p.hint { color: #8b93a1; font-size: 13px; margin-top: 22px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="card">
+  <svg class="mustache" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg" aria-label="Alfred">
+    <path fill="#1a1d24" d="M100 26c-8-8-22-12-36-9C44 21 32 32 22 30c-8-1-14-7-14-7s1 13 11 19c9 5 22 6 34 2 15-5 33-4 47 3 14-7 32-8 47-3 12 4 25 3 34-2 10-6 11-19 11-19s-6 6-14 7c-10 2-22-9-42-13-14-3-28 1-36 9z"/>
+  </svg>
+  <h1>Einladung zum Haushalt<br><span class="household" id="hh">„…“</span></h1>
+  <p class="sub" id="msg">Alfred öffnet sich gleich automatisch. Falls nichts passiert, tippe auf den Button.</p>
+  <a class="btn" id="open" href="#">In Alfred öffnen</a>
+  <p class="hint">Du hast Alfred noch nicht? Dann installiere die App zuerst —
+    und öffne diesen Link danach erneut.</p>
+</div>
+<script>
+(function () {
+  var p = new URLSearchParams(location.search).get("p") || "";
+  var deep = "alfred://join?p=" + p;
+  document.getElementById("open").href = deep;
+  try {
+    var json = decodeURIComponent(escape(atob(p.replace(/-/g, "+").replace(/_/g, "/"))));
+    var name = JSON.parse(json).name;
+    if (name) document.getElementById("hh").textContent = "„" + name + "“";
+  } catch (e) { /* keep placeholder */ }
+  if (p) {
+    setTimeout(function () { window.location.href = deep; }, 600);
+  }
+})();
+</script>
+</body>
+</html>
