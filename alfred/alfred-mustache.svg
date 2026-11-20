@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60">
+  <!-- The official Alfred brand mark — the approved handlebar mustache.
+       Single source of truth: reuse this file, do not redraw.
+       The Kotlin MustacheLogo (Theme.kt) and Android launcher drawables
+       carry the identical path data. -->
+  <path fill="#1A1D24" d="M50 38 C38 46 14 48 6 36 C2 28 4 16 11 10 C13 7 18 7 20 11 C22 15 20 20 16 22 C24 16 34 12 45 14 C48 15 50 19 50 23 C50 19 52 15 55 14 C66 12 76 16 84 22 C80 20 78 15 80 11 C82 7 87 7 89 10 C96 16 98 28 94 36 C86 48 62 46 50 38 Z"/>
+</svg>
