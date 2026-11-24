@@ -3,24 +3,219 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Alfred</title>
+<title>Alfred – Dein Haushaltsbutler</title>
+<meta name="description" content="Alfred: Einkaufsliste, Angebote und Schwarzes Brett für deinen Haushalt. Daten bleiben in deinem eigenen Google Drive.">
 <style>
-  body {
-    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: #f4f6f9; color: #1a1d24;
-    min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    text-align: center; padding: 24px;
-  }
-  img.logo { width: 110px; margin-bottom: 18px; }
-  h1 { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
-  p { color: #5a6270; font-size: 15px; }
+:root{
+  --bg:#F4F6F9;--card:#FFFFFF;--surface:#F6F8FA;--row:#F2F4F7;--border:#E2E7ED;--soft:#E8EEF5;
+  --text:#1A1D21;--dim:#6B7280;--faint:#C0C7D1;--primary:#1F3A5F;--accent:#2E5AAC;--btn:#3E6BC4;
+  --phone:#FFFFFF;--phone-border:#D8DDE4;--shadow:0 8px 30px rgba(26,29,33,.10);
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0D0F13;--card:#1B1E26;--surface:#1B1E26;--row:#232832;--border:#2B303A;--soft:#26303F;
+  --text:#EDF0F4;--dim:#8B93A1;--faint:#4A5160;--primary:#EDF0F4;--accent:#8FA9D8;--btn:#3E6BC4;
+  --phone:#0D0F13;--phone-border:#2B303A;--shadow:0 8px 30px rgba(0,0,0,.45);
+}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+/* Hero */
+.hero{text-align:center;padding:64px 22px 40px}
+.hero img{width:120px;height:auto}
+.hero h1{font-size:40px;font-weight:700;letter-spacing:-.02em;margin-top:14px}
+.hero .slogan{font-size:19px;color:var(--dim);margin-top:4px}
+.hero .lead{max-width:560px;margin:18px auto 0;font-size:16px}
+.cta{display:inline-flex;align-items:center;gap:10px;margin-top:28px;background:var(--btn);color:#fff;text-decoration:none;
+  padding:15px 30px;border-radius:999px;font-size:16px;font-weight:600;box-shadow:0 6px 18px rgba(62,107,196,.35)}
+.cta svg{width:20px;height:20px}
+.cta-note{font-size:13px;color:var(--dim);margin-top:12px}
+/* Sections */
+section.wrap{padding:56px 22px 24px}
+h2{font-size:26px;font-weight:680;letter-spacing:-.01em;text-align:center}
+.sub{text-align:center;color:var(--dim);margin-top:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:26px}
+.fcard{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:0 1px 3px rgba(26,29,33,.05)}
+.fcard .ic{width:44px;height:44px;border-radius:13px;background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--accent)}
+.fcard .ic svg{width:24px;height:24px}
+.fcard h3{font-size:16.5px;font-weight:640;margin-top:12px}
+.fcard p{font-size:14px;color:var(--dim);margin-top:4px}
+.fcard.soon{border-style:dashed;background:transparent;box-shadow:none}
+.badge{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
+  background:var(--soft);border-radius:999px;padding:2px 9px;margin-top:12px}
+/* Mockups */
+.disclaimer{display:flex;gap:10px;align-items:flex-start;max-width:640px;margin:18px auto 0;background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:12px 14px;font-size:13.5px;color:var(--dim)}
+.disclaimer svg{flex-shrink:0;width:20px;height:20px;color:var(--accent);margin-top:1px}
+.phones{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+.pwrap{text-align:center}
+.phone{width:300px;background:var(--phone);border:1px solid var(--phone-border);border-radius:36px;padding:10px;box-shadow:var(--shadow);text-align:left}
+.screen{border-radius:28px;overflow:hidden;min-height:560px;background:var(--phone);display:flex;flex-direction:column;position:relative}
+.plabel{font-size:12.5px;color:var(--dim);margin-top:10px}
+.sbar{display:flex;justify-content:space-between;padding:12px 20px 4px;font-size:11.5px;color:var(--dim)}
+.abar{display:flex;align-items:center;gap:10px;padding:6px 18px 6px}
+.abar h4{font-size:19px;font-weight:660}
+.abar .sp{margin-left:auto}
+.ibtn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);color:var(--dim)}
+.ibtn svg{width:18px;height:18px}
+.sync{font-size:11px;color:var(--dim);padding:0 18px 6px;display:flex;align-items:center;gap:6px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.content{padding:6px 14px 18px;display:flex;flex-direction:column;gap:9px}
+.board{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:14px}
+.bhead{display:flex;align-items:center;gap:10px}
+.bhead .ic{width:36px;height:36px;border-radius:11px;background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--accent)}
+.bhead .ic svg{width:20px;height:20px}
+.bhead b{font-size:15px;font-weight:640}
+.plus{margin-left:auto;width:32px;height:32px;border-radius:50%;background:var(--btn);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1}
+.msg{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:11px 12px;margin-top:9px}
+.msg .meta{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--dim)}
+.av{width:22px;height:22px;border-radius:50%;background:var(--soft);color:var(--accent);font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.msg .meta .who{font-weight:600;color:var(--text)}
+.msg .txt{font-size:13px;margin-top:6px}
+.feature{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:14px;display:flex;align-items:center;gap:12px}
+.feature .ic{width:40px;height:40px;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--accent)}
+.feature .ic svg{width:22px;height:22px}
+.feature .n{font-size:14.5px;font-weight:620}
+.feature .d{font-size:11.5px;color:var(--dim)}
+.feature .chev{margin-left:auto;color:var(--faint)}
+.row{background:var(--row);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:11px;font-size:14px}
+.cb{width:20px;height:20px;border-radius:6px;border:2px solid var(--faint);flex-shrink:0}
+.row.done{color:var(--dim);text-decoration:line-through}
+.row.done .cb{background:var(--accent);border-color:var(--accent)}
+.qty{margin-left:auto;font-size:12px;color:var(--dim)}
+.sec{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:6px 4px 0}
+.input{margin:auto 14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:11px 16px;font-size:13px;color:var(--dim);display:flex;align-items:center}
+.input .plus{width:28px;height:28px;font-size:18px}
+.search{margin:4px 14px 6px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:9px 14px;font-size:12.5px;color:var(--dim)}
+.chips{display:flex;gap:6px;padding:0 14px 6px;flex-wrap:wrap}
+.chip{font-size:11.5px;border:1px solid var(--border);border-radius:999px;padding:4px 10px;color:var(--dim)}
+.chip.on{background:var(--soft);color:var(--accent);border-color:transparent;font-weight:600}
+.offer{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px;display:flex;gap:11px;align-items:center}
+.offer .img{width:46px;height:46px;border-radius:12px;background:var(--row);display:flex;align-items:center;justify-content:center;color:var(--faint)}
+.offer .img svg{width:24px;height:24px}
+.offer .n{font-size:13.5px;font-weight:600}
+.offer .d{font-size:11.5px;color:var(--dim)}
+.offer .p{margin-left:auto;text-align:right;white-space:nowrap}
+.offer .p b{font-size:15px;color:var(--accent)}
+.offer .p s{display:block;font-size:11px;color:var(--dim)}
+/* Privacy + footer */
+.privacy{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:26px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.privacy h3{font-size:16px;font-weight:640}
+.privacy p{font-size:14px;color:var(--dim);margin-top:4px}
+footer{text-align:center;color:var(--dim);font-size:13px;padding:30px 0 50px}
+@media (prefers-color-scheme:dark){img.logo{filter:invert(1) brightness(.95)}}
+@media (max-width:600px){.hero{padding-top:44px}.phone{width:100%;max-width:300px}.hero h1{font-size:34px}}
 </style>
 </head>
 <body>
-<div>
-  <img class="logo" src="alfred-mustache.svg" alt="Alfred">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-cart" viewBox="0 0 24 24"><path fill="currentColor" d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM7.2 14.8 8.1 13h7.4c.75 0 1.41-.41 1.75-1.03L21 4.96 19.25 4l-3.7 7H8.53L4.27 2H1v2h2l3.6 7.59-1.35 2.45C4.52 15.37 5.48 17 7 17h12v-2H7.42c-.13 0-.22-.11-.22-.2z"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path fill="currentColor" d="m21.41 11.58-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58s1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41s-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M16 9V4h1c.55 0 1-.45 1-1s-.45-1-1-1H7c-.55 0-1 .45-1 1s.45 1 1 1h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3z"/></symbol>
+  <symbol id="i-group" viewBox="0 0 24 24"><path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></symbol>
+  <symbol id="i-sync" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><path fill="currentColor" d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></symbol>
+  <symbol id="i-food" viewBox="0 0 24 24"><path fill="currentColor" d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></symbol>
+  <symbol id="i-dl" viewBox="0 0 24 24"><path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><path fill="currentColor" d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></symbol>
+</svg>
+
+<header class="hero wrap">
+  <img class="logo" src="alfred-mustache.svg" alt="Alfred-Logo">
   <h1>Alfred</h1>
-  <p>Dein Haushaltsbutler.</p>
-</div>
+  <p class="slogan">Dein Haushaltsbutler.</p>
+  <p class="lead">Gemeinsame Einkaufsliste, aktuelle Angebote und ein Schwarzes Brett für alle im Haushalt. Ohne Abo, ohne Werbung, und deine Daten bleiben in deinem eigenen Google Drive.</p>
+  <a class="cta" href="download/"><svg><use href="#i-dl"/></svg>App herunterladen</a>
+  <p class="cta-note">Für Android · nur für eingeladene Personen, Download mit Passwort</p>
+</header>
+
+<section class="wrap">
+  <h2>Was Alfred kann</h2>
+  <p class="sub">Alles, was ein Haushalt im Alltag gemeinsam braucht.</p>
+  <div class="grid">
+    <div class="fcard"><div class="ic"><svg><use href="#i-cart"/></svg></div><h3>Einkaufsliste</h3><p>Gemeinsam schreiben und abhaken, sortiert nach deinem Weg durch den Laden, mit eigener Reihenfolge per Ziehen.</p></div>
+    <div class="fcard"><div class="ic"><svg><use href="#i-tag"/></svg></div><h3>Angebote</h3><p>Aktuelle Prospekte der Märkte in deiner Nähe durchsuchen und Angebote direkt auf die Liste setzen.</p></div>
+    <div class="fcard"><div class="ic"><svg><use href="#i-pin"/></svg></div><h3>Schwarzes Brett</h3><p>Kurze Nachrichten für alle im Haushalt, mit Ablaufzeit von einem Tag bis einer Woche. Danach räumt Alfred selbst auf.</p></div>
+    <div class="fcard"><div class="ic"><svg><use href="#i-group"/></svg></div><h3>Gemeinsamer Haushalt</h3><p>Mitglieder per Einladungslink hinzufügen. Der Owner entscheidet, welche Funktionen der Haushalt nutzt.</p></div>
+    <div class="fcard"><div class="ic"><svg><use href="#i-sync"/></svg></div><h3>Funktioniert auch offline</h3><p>Änderungen werden gespeichert und beim nächsten Sync zusammengeführt, ohne dass etwas verloren geht.</p></div>
+    <div class="fcard"><div class="ic"><svg><use href="#i-cloud"/></svg></div><h3>Deine Daten, dein Drive</h3><p>Alfred hat keinen eigenen Server. Alles liegt in einem Ordner in deinem Google Drive, und Alfred sieht nur seine eigenen Dateien.</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>So sieht Alfred aus</h2>
+  <div class="disclaimer"><svg><use href="#i-info"/></svg><span><b>Hinweis:</b> Das sind HTML-Mockups, keine echten Screenshots. Die App kann je nach Gerät, Android-Version und Einstellungen anders aussehen.</span></div>
+  <div class="phones">
+    <div class="pwrap"><div class="phone"><div class="screen">
+      <div class="sbar"><span>9:41</span><span>5G ▮▮▮</span></div>
+      <div class="abar"><h4>Zuhause</h4><span class="sp"></span><span class="ibtn"><svg><use href="#i-more"/></svg></span></div>
+      <div class="sync"><span class="dot"></span>Synchronisiert · gerade eben</div>
+      <div class="content">
+        <div class="board">
+          <div class="bhead"><span class="ic"><svg><use href="#i-pin"/></svg></span><b>Schwarzes Brett</b><span class="plus">+</span></div>
+          <div class="msg"><div class="meta"><span class="av">L</span><span class="who">Lena</span><span>Heute 08:12 · noch 2 Tage</span></div><div class="txt">Paket für Nachbarn liegt im Flur, bitte heute Abend rüberbringen.</div></div>
+          <div class="msg"><div class="meta"><span class="av">M</span><span class="who">Max</span><span>Gestern · noch 6 Tage</span></div><div class="txt">Samstag kommt der Handwerker zwischen 9 und 12 Uhr.</div></div>
+          <div class="msg"><div class="meta"><span class="av">L</span><span class="who">Lena</span><span>Mo · noch 1 Tag</span></div><div class="txt">Pflanzen auf dem Balkon gießen!</div></div>
+        </div>
+        <div class="feature"><span class="ic"><svg><use href="#i-cart"/></svg></span><div><div class="n">Einkaufsliste</div><div class="d">7 offen</div></div><span class="chev">›</span></div>
+        <div class="feature"><span class="ic"><svg><use href="#i-tag"/></svg></span><div><div class="n">Angebote</div><div class="d">3 Märkte in deiner Nähe</div></div><span class="chev">›</span></div>
+      </div>
+    </div></div><p class="plabel">Haushalts-Startseite mit Schwarzem Brett</p></div>
+
+    <div class="pwrap"><div class="phone"><div class="screen">
+      <div class="sbar"><span>9:41</span><span>5G ▮▮▮</span></div>
+      <div class="abar"><span class="ibtn"><svg><use href="#i-back"/></svg></span><h4>Einkaufsliste</h4></div>
+      <div class="content">
+        <div class="sec">Obst &amp; Gemüse</div>
+        <div class="row"><span class="cb"></span>Bananen<span class="qty">6 Stk.</span></div>
+        <div class="row"><span class="cb"></span>Tomaten<span class="qty">500 g</span></div>
+        <div class="sec">Kühlregal</div>
+        <div class="row"><span class="cb"></span>Hafermilch<span class="qty">2 l</span></div>
+        <div class="row"><span class="cb"></span>Bergkäse</div>
+        <div class="sec">Erledigt</div>
+        <div class="row done"><span class="cb"></span>Brot</div>
+        <div class="row done"><span class="cb"></span>Kaffee</div>
+      </div>
+      <div class="input">Neuer Eintrag …<span class="plus" style="margin-left:auto">+</span></div>
+    </div></div><p class="plabel">Gemeinsame Einkaufsliste</p></div>
+
+    <div class="pwrap"><div class="phone"><div class="screen">
+      <div class="sbar"><span>9:41</span><span>5G ▮▮▮</span></div>
+      <div class="abar"><span class="ibtn"><svg><use href="#i-back"/></svg></span><h4>Angebote</h4></div>
+      <div class="search">Suche in Angeboten …</div>
+      <div class="chips"><span class="chip on">Alle Märkte</span><span class="chip">Rewe</span><span class="chip">Lidl</span><span class="chip">Edeka</span></div>
+      <div class="content">
+        <div class="offer"><span class="img"><svg><use href="#i-tag"/></svg></span><div><div class="n">Bio-Bananen</div><div class="d">Rewe · 1 kg</div></div><div class="p"><b>1,49 €</b><s>1,99 €</s></div></div>
+        <div class="offer"><span class="img"><svg><use href="#i-tag"/></svg></span><div><div class="n">Hafer Barista</div><div class="d">Lidl · 1 l</div></div><div class="p"><b>1,29 €</b><s>1,79 €</s></div></div>
+        <div class="offer"><span class="img"><svg><use href="#i-tag"/></svg></span><div><div class="n">Bergkäse</div><div class="d">Edeka · 100 g</div></div><div class="p"><b>1,99 €</b><s>2,59 €</s></div></div>
+        <div class="offer"><span class="img"><svg><use href="#i-tag"/></svg></span><div><div class="n">Espresso Bohnen</div><div class="d">Rewe · 1 kg</div></div><div class="p"><b>9,99 €</b><s>13,49 €</s></div></div>
+      </div>
+    </div></div><p class="plabel">Angebote aus Märkten in der Nähe</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>Was noch kommt</h2>
+  <p class="sub">Geplant, aber noch nicht fertig. Reihenfolge und Umfang können sich ändern.</p>
+  <div class="grid">
+    <div class="fcard soon"><div class="ic"><svg><use href="#i-bell"/></svg></div><h3>Benachrichtigungen</h3><p>Hinweis aufs Handy, wenn jemand etwas ans Schwarze Brett heftet.</p><span class="badge">Geplant</span></div>
+    <div class="fcard soon"><div class="ic"><svg><use href="#i-key"/></svg></div><h3>Rechte pro Mitglied</h3><p>Der Owner legt fest, wer was im Haushalt darf.</p><span class="badge">Geplant</span></div>
+    <div class="fcard soon"><div class="ic"><svg><use href="#i-food"/></svg></div><h3>Essensplanung &amp; Gerichte</h3><p>Wochenplan und gespeicherte Gerichte, deren Zutaten direkt auf die Einkaufsliste wandern.</p><span class="badge">Geplant</span></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="privacy">
+    <div><h3>Kein eigener Server</h3><p>Alfred speichert nichts bei uns. Synchronisiert wird über Dateien in deinem Google Drive.</p></div>
+    <div><h3>Nur eigene Dateien</h3><p>Alfred darf in Drive nur die Dateien sehen, die es selbst angelegt hat oder die du ihm freigibst.</p></div>
+    <div><h3>Updates direkt aus der App</h3><p>Alfred prüft beim Start, ob es eine neue Version gibt, und aktualisiert sich auf Wunsch selbst.</p></div>
+  </div>
+</section>
+
+<footer>Alfred ist ein privates Projekt und nicht im Play Store erhältlich.</footer>
 </body>
 </html>

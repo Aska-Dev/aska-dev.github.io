@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Alfred herunterladen</title>
+<style>
+:root{--bg:#F4F6F9;--card:#FFFFFF;--border:#E2E7ED;--soft:#E8EEF5;--text:#1A1D21;--dim:#6B7280;--accent:#2E5AAC;--btn:#3E6BC4;--danger:#B4443C;--input:#F6F8FA}
+@media (prefers-color-scheme:dark){:root{--bg:#0D0F13;--card:#1B1E26;--border:#2B303A;--soft:#26303F;--text:#EDF0F4;--dim:#8B93A1;--accent:#8FA9D8;--danger:#E07A72;--input:#232832}}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+@media (prefers-color-scheme:dark){.top img{filter:invert(1) brightness(.95)}}
+body{font-family:-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+  display:flex;align-items:center;justify-content:center;padding:24px;line-height:1.5}
+.card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:36px 28px;max-width:440px;width:100%;
+  box-shadow:0 8px 32px rgba(20,30,55,.08)}
+.top{text-align:center}
+.top img{width:96px;height:auto}
+h1{font-size:22px;font-weight:650;margin-top:12px}
+.sub{color:var(--dim);font-size:14.5px;margin-top:6px}
+.ver{display:inline-block;margin-top:10px;font-size:12px;font-weight:600;color:var(--accent);background:var(--soft);border-radius:999px;padding:2px 10px}
+form{margin-top:24px}
+label{font-size:13px;font-weight:600;display:block;margin-bottom:6px}
+input{width:100%;font:inherit;font-size:16px;color:var(--text);background:var(--input);border:1px solid var(--border);border-radius:12px;padding:12px 14px;outline:none}
+input:focus{border-color:var(--btn)}
+button{width:100%;margin-top:14px;font:inherit;font-size:16px;font-weight:600;color:#fff;background:var(--btn);border:0;border-radius:999px;padding:14px;cursor:pointer}
+button:disabled{opacity:.6;cursor:default}
+.err{color:var(--danger);font-size:13.5px;margin-top:10px;min-height:20px}
+.prog{display:none;margin-top:16px}
+.bar{height:6px;border-radius:999px;background:var(--soft);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--btn);transition:width .2s}
+.ptext{font-size:13px;color:var(--dim);margin-top:6px;text-align:center}
+.steps{margin-top:26px;border-top:1px solid var(--border);padding-top:18px}
+.steps h2{font-size:14.5px;font-weight:640}
+.steps ol{margin:8px 0 0 18px;font-size:13.5px;color:var(--dim)}
+.steps li{margin-top:4px}
+.back{display:block;text-align:center;margin-top:20px;font-size:13.5px;color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="top">
+    <img src="/alfred/alfred-mustache.svg" alt="Alfred">
+    <h1>Alfred herunterladen</h1>
+    <p class="sub">Alfred gibt es nur für eingeladene Personen. Das Passwort bekommst du vom Entwickler.</p>
+    <span class="ver" id="ver" hidden></span>
+  </div>
+  <form id="f" autocomplete="off">
+    <label for="pw">Passwort</label>
+    <input id="pw" type="password" required autocomplete="current-password">
+    <button id="go" type="submit">Herunterladen</button>
+    <div class="err" id="err" role="alert"></div>
+    <div class="prog" id="prog"><div class="bar"><i id="bar"></i></div><div class="ptext" id="ptext"></div></div>
+  </form>
+  <div class="steps">
+    <h2>So installierst du Alfred</h2>
+    <ol>
+      <li>Heruntergeladene Datei <b>alfred-….apk</b> öffnen.</li>
+      <li>Falls Android fragt: „Aus dieser Quelle zulassen“ aktivieren.</li>
+      <li>Installieren. Warnt Play Protect, auf „Trotzdem installieren“ tippen, weil Alfred nicht aus dem Play Store kommt.</li>
+      <li>Alfred öffnen und mit Google anmelden. Spätere Updates installiert die App selbst.</li>
+    </ol>
+  </div>
+  <a class="back" href="/alfred/">← Zurück zu Alfred</a>
+</div>
+<script>
+(function () {
+  var BASE = "/alfred/releases/";
+  var $ = function (id) { return document.getElementById(id); };
+  var b64 = function (s) { return Uint8Array.from(atob(s), function (c) { return c.charCodeAt(0); }); };
+  var hex = function (buf) { return Array.from(new Uint8Array(buf)).map(function (x) { return x.toString(16).padStart(2, "0"); }).join(""); };
+  var info = null;
+
+  function setProgress(pct, text) {
+    $("prog").style.display = "block";
+    $("bar").style.width = pct + "%";
+    $("ptext").textContent = text;
+  }
+
+  fetch(BASE + "version.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) { if (j) { info = j; $("ver").textContent = "Version " + j.versionName; $("ver").hidden = false; } })
+    .catch(function () {});
+
+  async function download(url) {
+    var r = await fetch(url, { cache: "no-store" });
+    if (!r.ok) throw new Error("download");
+    var total = +r.headers.get("Content-Length") || 0;
+    if (!r.body || !total) return new Uint8Array(await r.arrayBuffer());
+    var reader = r.body.getReader(), chunks = [], got = 0;
+    for (;;) {
+      var s = await reader.read();
+      if (s.done) break;
+      chunks.push(s.value); got += s.value.length;
+      setProgress(Math.round(got / total * 90), "Wird heruntergeladen … " + Math.round(got / total * 100) + " %");
+    }
+    var out = new Uint8Array(got), o = 0;
+    chunks.forEach(function (c) { out.set(c, o); o += c.length; });
+    return out;
+  }
+
+  $("f").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    $("err").textContent = "";
+    $("go").disabled = true;
+    try {
+      if (!info) {
+        var r = await fetch(BASE + "version.json", { cache: "no-store" });
+        if (!r.ok) throw new Error("version");
+        info = await r.json();
+      }
+      setProgress(2, "Passwort wird geprüft …");
+      var kp = info.keyForPassword;
+      var base = await crypto.subtle.importKey("raw", new TextEncoder().encode($("pw").value), "PBKDF2", false, ["deriveKey"]);
+      var wrapKey = await crypto.subtle.deriveKey({ name: "PBKDF2", hash: "SHA-256", salt: b64(kp.salt), iterations: kp.iterations },
+        base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+      var raw;
+      try {
+        raw = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(kp.iv) }, wrapKey, b64(kp.ct));
+      } catch (x) { throw new Error("password"); }
+      var key = await crypto.subtle.importKey("raw", raw, "AES-GCM", false, ["decrypt"]);
+      var enc = await download(BASE + info.apk);
+      setProgress(94, "Wird entschlüsselt …");
+      var apk = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(info.iv) }, key, enc);
+      if (hex(await crypto.subtle.digest("SHA-256", apk)) !== info.apkSha256) throw new Error("checksum");
+      setProgress(100, "Fertig. Die Datei wird gespeichert.");
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([apk], { type: "application/vnd.android.package-archive" }));
+      a.download = "alfred-" + info.versionName + ".apk";
+      document.body.appendChild(a); a.click(); a.remove();
+    } catch (x) {
+      $("prog").style.display = "none";
+      $("err").textContent = x.message === "password" ? "Passwort ist falsch."
+        : x.message === "checksum" ? "Die Datei ist beschädigt. Bitte versuche es erneut."
+        : "Download fehlgeschlagen. Bitte prüfe deine Verbindung und versuche es erneut.";
+    } finally {
+      $("go").disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
