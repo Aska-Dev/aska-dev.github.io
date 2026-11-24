@@ -15,7 +15,7 @@
     "ct": "OCMbptp/bk+Zpsdp9kiyBLG+mQDnVavcL9ay9eInhl8G0xrXtjutbzMj1nDiOv4U"
   },
   "lock": {
-    "epoch": 1,
+    "epoch": 0,
     "salt": "xBv2cBpmDQHh2S3u7ZSonw==",
     "iterations": 200000,
     "hash": "WlrFOuoqc5vv3dtn1NOHvlRaYHwbevdPBpm4rDDGros="
