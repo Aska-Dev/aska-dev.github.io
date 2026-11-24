@@ -1,0 +1,23 @@
+{
+  "versionCode": 2,
+  "versionName": "0.1.1",
+  "apk": "alfred-2.apk.enc",
+  "apkSha256": "a0a3aeee33eb92a982f422d1e8070020ed934bd9ecc41d5ef5a17c344c37447f",
+  "iv": "RvL0HCTB8F4wcL4T",
+  "keyForApp": {
+    "iv": "g/RWHpnDzgNiqKna",
+    "ct": "t0RW2YElP6ctGIciQTEcfhqE1l/Pt/KnD9iOrtqSknbdmR7fuQfs8vqQbLgR7SvZ"
+  },
+  "keyForPassword": {
+    "salt": "wqF6DnuYbtQ9m1HS8IhTFg==",
+    "iterations": 600000,
+    "iv": "aeNkGdGAdAjSLv5b",
+    "ct": "OCMbptp/bk+Zpsdp9kiyBLG+mQDnVavcL9ay9eInhl8G0xrXtjutbzMj1nDiOv4U"
+  },
+  "lock": {
+    "epoch": 0,
+    "salt": "UwrS0HfQlsltCMiwbM0mKg==",
+    "iterations": 200000,
+    "hash": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+  }
+}
